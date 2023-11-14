@@ -53,49 +53,67 @@ def pausesong():
   stop = True
 
 def playsong():
-  global stop
-  global play_button
-  global wid
-  stop = False
-  play_button.config(command=pausesong,image=pausimg)
-
-  while 100 and not stop:
-    prog.set(wid)
-    prog.update()
-    wid+=1
-    print(wid)
-    sleep(1)
-
+    global stop
+    global play_button
+    global wid
+    stop = False
+    play_button.config(command=pausesong,image=pausimg)
+    try:
+        while 100 and not stop:
+            prog.set(wid)
+            prog.update()
+            wid+=1
+            print(wid)
+            sleep(1)
+    except:
+        pass
 
 def music_starter():
   t = threading.Thread(target=playsong)
   t.start()
 
 
-def play_status():
-    pass
+def nextsong():
+    global wid
+    global prog
+    wid=0
+    prog.set(wid)
+    pausesong()
+
+def previoussong():
+    global wid
+    global prog
+    wid=0
+    prog.set(wid)
+    pausesong()
      
-previous_button=Button(control,width=24,border=0,background="#dfdfdf",image=previmg,command=play_status)
+previous_button=Button(control,width=24,border=0,background="#dfdfdf",activebackground="#dfdfdf",image=previmg,command=previoussong)
 previous_button.pack(side=LEFT,padx=(270,0))
-play_button=Button(control,width=24,border=0,background="#dfdfdf",image=plimg,command=music_starter)
+play_button=Button(control,width=24,border=0,background="#dfdfdf",activebackground="#dfdfdf",image=plimg,command=music_starter)
 play_button.pack(side=LEFT,padx=(30,26))
-next_button=Button(control,width=24,border=0,background="#dfdfdf",image=neximg,command=play_status)
+next_button=Button(control,width=24,border=0,background="#dfdfdf",activebackground="#dfdfdf",image=neximg,command=nextsong)
 next_button.pack(side=LEFT)
 
 
 #MUSIC STATUS PROGRESS BAR
-prog=Scale(playing,orient=HORIZONTAL,highlightthickness=0,width=4,length=650,foreground="#dfdfdf",background="#dfdfdf",troughcolor="red")
+prog=Scale(playing,orient=HORIZONTAL,highlightthickness=0,width=4,length=660,foreground="#dfdfdf",background="#dfdfdf",troughcolor="red")
 prog.pack(side=LEFT,padx=6,fill=X)
-# Button(prog,width=40).pack()
+
 #resizing and respacing window/button on minimizing or maxismizing window
 def window_event(e=None):
+    global play_button
+    global next_button
+    global previous_button
+    global prog
     scr=root.winfo_width()
     hig=root.winfo_height()
     if scr==1366 and hig==705:
+        prog.config(length=1366)
         previous_button.pack(side=LEFT,padx=(600,0))
         play_button.pack(side=LEFT,padx=(30,26))
         next_button.pack(side=LEFT)
-    if (scr==700 and hig==500) or (scr==800 and hig==500) :
+    if (scr==700 and hig==500) or (scr==800 and hig==500) or (scr==1370 and hig==500) or (scr==705 and hig==500) :
+        prog.config(length=660)
         previous_button.pack(side=LEFT,padx=(275,0))
         play_button.pack(side=LEFT,padx=(30,26))
         next_button.pack(side=LEFT)
@@ -131,18 +149,18 @@ def side_menu():
         playing=Frame(root,background="#dedede") 
         playing.pack(side=BOTTOM,fill=X)
         
-        prog=Scale(playing,orient=HORIZONTAL,highlightthickness=0,width=7,foreground="#dfdfdf",background="#dfdfdf",troughcolor="red")
+        prog=Scale(playing,orient=HORIZONTAL,highlightthickness=0,width=4,length=660,foreground="#dfdfdf",background="#dfdfdf",troughcolor="red")
         prog.pack(side=LEFT,padx=6)
 
-        previous_button=Button(control,width=24,border=0,background="#dedede",image=previmg,command=play_status)
-        previous_button.pack(side=LEFT,padx=(275,0))
-        play_button=Button(control,width=24,border=0,background="#dedede",image=plimg,command=play_status)
+        previous_button=Button(control,width=24,border=0,background="#dfdfdf",activebackground="#dfdfdf",image=previmg,command=previoussong)
+        previous_button.pack(side=LEFT,padx=(270,0))
+        play_button=Button(control,width=24,border=0,background="#dfdfdf",activebackground="#dfdfdf",image=plimg,command=music_starter)
         play_button.pack(side=LEFT,padx=(30,26))
-        next_button=Button(control,width=24,border=0,background="#dedede",image=neximg,command=play_status)
+        next_button=Button(control,width=24,border=0,background="#dfdfdf",activebackground="#dfdfdf",image=neximg,command=nextsong)
         next_button.pack(side=LEFT)
         #\recreating
 
-        option_butt=Button(option_frame,border=0,bg="black",width=12,text="kk",foreground="white")
+        option_butt=Button(option_frame,border=0,bg="black",width=12,text="Add song",foreground="white")
         option_butt.pack(pady=5,padx=9)
         option_butt=Button(option_frame,border=0,bg="black",foreground="white",width=12,text="kk")
         option_butt.pack(pady=5)
@@ -155,7 +173,7 @@ def side_menu():
         clear_frame(option_frame)
         root.minsize(width=700,height=500)
         count=0
- #SIDE MENU BUTTON       
+ #SIDE MENU BUTTON  #0AF7C2      
 side_butt=Button(opbuttf,background="#0AF7C2",activebackground="#DEDEDE",image=opimg,width=29,border=0,command=side_menu)
 side_butt.pack(anchor=NW)
 
