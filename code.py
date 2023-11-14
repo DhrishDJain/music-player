@@ -4,9 +4,11 @@ import threading
 import tkinter as tk
 from tkinter.font import Font
 from time import sleep
+import pygame
 root=tk.Tk()
 root.config(background="#dfdfdf")
 root.minsize(width=700,height=500)
+pygame.mixer.init()
 #function to delete frame
 def clear_frame(frame):
    frame.destroy()
@@ -40,24 +42,43 @@ global play_button
 global next_button
 global previous_button
 
-ds=Font(size=0)
-
 stop = False
+stat=False
 
 def pausesong():
-  # If the STOP button is pressed then terminate the loop
   global stop
-  global play_button
-  play_button.config(command=music_starter,image=plimg)
+  global stat
+  stat=True
+  stop=True
+  play_button.config(command=unpausesong,image=plimg)
+  pygame.mixer.music.pause()
   
-  stop = True
 
+  global play_button
+def unpausesong():
+    global stop
+    global play_button
+    pygame.mixer.music.unpause()
+    stop = False
+    music_starter()
+    try:
+        play_button.config(command=pausesong,image=pausimg)
+    except:
+        pass
+    
+def load():
+    pygame.mixer.music.load("Khalasi - Aditya Gadhvi-(SongsPK).mp3")
 def playsong():
     global stop
     global play_button
     global wid
-    stop = False
+    global stat
     play_button.config(command=pausesong,image=pausimg)
+    if stat==False:
+        load()
+        pygame.mixer.music.play(loops=0)
+
+
     try:
         while 100 and not stop:
             prog.set(wid)
@@ -69,6 +90,7 @@ def playsong():
         pass
 
 def music_starter():
+  global t
   t = threading.Thread(target=playsong)
   t.start()
 
