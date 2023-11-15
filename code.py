@@ -1,10 +1,10 @@
 from tkinter import *
 from tkinter import ttk
-import threading
 import tkinter as tk
-from tkinter.font import Font
+import threading
 from time import sleep
 import pygame
+import os
 root=tk.Tk()
 root.config(background="#dfdfdf")
 root.minsize(width=700,height=500)
@@ -48,13 +48,13 @@ stat=False
 def pausesong():
   global stop
   global stat
+  global play_button
   stat=True
   stop=True
   play_button.config(command=unpausesong,image=plimg)
   pygame.mixer.music.pause()
   
 
-  global play_button
 def unpausesong():
     global stop
     global play_button
@@ -66,16 +66,36 @@ def unpausesong():
     except:
         pass
     
-def load():
-    pygame.mixer.music.load("Khalasi - Aditya Gadhvi-(SongsPK).mp3")
+def load(index):
+    global play_button
+    global stop
+    global wid
+    global prog
+    global stat
+    global t
+    stop=True
+    stat=False
+    wid=0
+    prog.set(wid)
+    music_list=os.listdir("geet")
+    play_button.config(image=pausimg)
+    path=f"geet\{music_list[index]}"
+    pygame.mixer.music.load(path)
+    # sleep(0.5)
+    root.after(1000,music_starter)
+
+    print("loaded")
+
+
 def playsong():
     global stop
     global play_button
     global wid
     global stat
     play_button.config(command=pausesong,image=pausimg)
+    # load(0)
     if stat==False:
-        load()
+        stop=False
         pygame.mixer.music.play(loops=0)
 
 
@@ -86,8 +106,12 @@ def playsong():
             wid+=1
             print(wid)
             sleep(1)
+        print("breaked")
     except:
+        pygame.mixer.music.unload()
+        print("unloaded")
         pass
+
 
 def music_starter():
   global t
@@ -96,18 +120,12 @@ def music_starter():
 
 
 def nextsong():
-    global wid
-    global prog
-    wid=0
-    prog.set(wid)
-    pausesong()
+    load(2)
+    # pausesong()
 
 def previoussong():
-    global wid
-    global prog
-    wid=0
-    prog.set(wid)
-    pausesong()
+    load(3)
+    # pausesong()
      
 previous_button=Button(control,width=24,border=0,background="#dfdfdf",activebackground="#dfdfdf",image=previmg,command=previoussong)
 previous_button.pack(side=LEFT,padx=(270,0))
@@ -118,7 +136,7 @@ next_button.pack(side=LEFT)
 
 
 #MUSIC STATUS PROGRESS BAR
-prog=Scale(playing,orient=HORIZONTAL,highlightthickness=0,width=4,length=660,foreground="#dfdfdf",background="#dfdfdf",troughcolor="red")
+prog=Scale(playing,orient=HORIZONTAL,highlightthickness=0,width=4,length=660,foreground="#dfdfdf",background="red",troughcolor="red")
 prog.pack(side=LEFT,padx=6,fill=X)
 
 #resizing and respacing window/button on minimizing or maxismizing window
@@ -156,6 +174,9 @@ def side_menu():
     global play_button#to edit button attributes out function once they are deleted for first time
     global next_button#to edit button attributes out function once they are deleted for first time
     global previous_button#to edit button attributes out function once they are deleted for first time
+    global stop
+    global stat
+    global wid
     if count==0:
         clear_frame(control)#to use fill=y of side menu
         clear_frame(playing)#to use fill=y of side menu
@@ -171,13 +192,21 @@ def side_menu():
         playing=Frame(root,background="#dedede") 
         playing.pack(side=BOTTOM,fill=X)
         
-        prog=Scale(playing,orient=HORIZONTAL,highlightthickness=0,width=4,length=660,foreground="#dfdfdf",background="#dfdfdf",troughcolor="red")
+        prog=Scale(playing,orient=HORIZONTAL,highlightthickness=0,width=4,length=660,foreground="#dfdfdf",background="red",troughcolor="red")
+        prog.set(wid)
         prog.pack(side=LEFT,padx=6)
-
         previous_button=Button(control,width=24,border=0,background="#dfdfdf",activebackground="#dfdfdf",image=previmg,command=previoussong)
         previous_button.pack(side=LEFT,padx=(270,0))
-        play_button=Button(control,width=24,border=0,background="#dfdfdf",activebackground="#dfdfdf",image=plimg,command=music_starter)
-        play_button.pack(side=LEFT,padx=(30,26))
+        # if stat==False:
+        #     play_button=Button(control,width=24,border=0,background="#dfdfdf",activebackground="#dfdfdf",image=plimg,command=music_starter)
+        #     play_button.pack(side=LEFT,padx=(30,26))
+        if stop==True:
+            play_button=Button(control,width=24,border=0,background="#dfdfdf",activebackground="#dfdfdf",image=plimg,command=unpausesong)
+            play_button.pack(side=LEFT,padx=(30,26))
+        elif stop==False:
+            play_button=Button(control,width=24,border=0,background="#dfdfdf",activebackground="#dfdfdf",image=pausimg,command=pausesong)
+            play_button.pack(side=LEFT,padx=(30,26))
+
         next_button=Button(control,width=24,border=0,background="#dfdfdf",activebackground="#dfdfdf",image=neximg,command=nextsong)
         next_button.pack(side=LEFT)
         #\recreating
