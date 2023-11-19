@@ -66,26 +66,6 @@ def unpausesong():
     except:
         pass
     
-def load(index):
-    global play_button
-    global stop
-    global wid
-    global prog
-    global stat
-    global t
-    stop=True
-    stat=False
-    wid=0
-    prog.set(wid)
-    music_list=os.listdir("geet")
-    play_button.config(image=pausimg)
-    path=f"geet\{music_list[index]}"
-    pygame.mixer.music.load(path)
-    # sleep(0.5)
-    root.after(1000,music_starter)
-
-    print("loaded")
-
 
 def playsong():
     global stop
@@ -93,7 +73,6 @@ def playsong():
     global wid
     global stat
     play_button.config(command=pausesong,image=pausimg)
-    # load(0)
     if stat==False:
         stop=False
         pygame.mixer.music.play(loops=0)
@@ -118,15 +97,16 @@ def music_starter():
   t = threading.Thread(target=playsong)
   t.start()
 
-
+song_no=0
 def nextsong():
-    load(2)
-    # pausesong()
+    global song_no
+    song_no+=1
+    load(song_no)
 
 def previoussong():
-    load(3)
-    # pausesong()
-     
+    global song_no
+    song_no-=1
+    load(song_no)
 previous_button=Button(control,width=24,border=0,background="#dfdfdf",activebackground="#dfdfdf",image=previmg,command=previoussong)
 previous_button.pack(side=LEFT,padx=(270,0))
 play_button=Button(control,width=24,border=0,background="#dfdfdf",activebackground="#dfdfdf",image=plimg,command=music_starter)
@@ -134,10 +114,29 @@ play_button.pack(side=LEFT,padx=(30,26))
 next_button=Button(control,width=24,border=0,background="#dfdfdf",activebackground="#dfdfdf",image=neximg,command=nextsong)
 next_button.pack(side=LEFT)
 
-
 #MUSIC STATUS PROGRESS BAR
 prog=Scale(playing,orient=HORIZONTAL,highlightthickness=0,width=4,length=660,foreground="#dfdfdf",background="red",troughcolor="red")
 prog.pack(side=LEFT,padx=6,fill=X)
+def load(index=0):
+    global play_button
+    global stop
+    global wid
+    global prog
+    global stat
+    global t
+    stop=True
+    stat=False
+    wid=0
+    prog.set(wid)
+    music_list=os.listdir("geet")
+    play_button.config(image=pausimg)
+    path=f"geet\{music_list[index]}"
+    pygame.mixer.music.load(path)
+    root.after(1000,music_starter)
+    print("loaded")
+load()
+
+     
 
 #resizing and respacing window/button on minimizing or maxismizing window
 def window_event(e=None):
