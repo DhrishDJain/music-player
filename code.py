@@ -5,9 +5,13 @@ import threading
 from time import sleep
 import pygame
 import os
+# back_control_colour="#1b2120"
+# opbutt_color="#341c42"
+
 back_control_colour="#BEB89A"
 opbutt_color="#1D1D1D"
 root=tk.Tk()
+
 root.config(background=back_control_colour)
 root.minsize(width=700,height=500)
 pygame.mixer.init()
@@ -23,9 +27,9 @@ opbuttf.pack(side=LEFT,fill=Y)
 plimg=PhotoImage(file="icon\play.png")
 playlimg=PhotoImage(file="icon\playlist.png")
 addimg=PhotoImage(file=r"icon\add.png")
-opimg=PhotoImage(file="icon\option-image.png")
+musfiimg=PhotoImage(file="icon\cassette.png")
 podimg=PhotoImage(file="icon\podcast.png")
-albimg=PhotoImage(file="icon\music.png")
+albimg=PhotoImage(file=r"icon\album.png")
 previmg=PhotoImage(file="icon\previous.png")
 pausimg=PhotoImage(file="icon\pause.png")
 neximg=PhotoImage(file=r'icon\next-button.png')
@@ -34,6 +38,8 @@ neximg=PhotoImage(file=r'icon\next-button.png')
 control=Frame(root,background=back_control_colour)
 control.pack(side=BOTTOM,fill=X)
 
+Label(text="SONGS",font="gabriola 20 bold",foreground="black",background=back_control_colour).pack(anchor=NW)
+# Label(root,height=0,width=500,font="gabriola 1",foreground="black").pack(side=TOP)
 #intial width of progress bar
 global wid
 wid=0
@@ -127,20 +133,24 @@ def load(index=0):
     global wid
     global prog
     global stat
-    global t
+    global music_list
     stop=True
     stat=False
     wid=0
     prog.set(wid)
     music_list=os.listdir("geet")
+    print(music_list)
     play_button.config(image=pausimg)
     path=f"geet\{music_list[index]}"
     pygame.mixer.music.load(path)
     root.after(1000,music_starter)
     print("loaded")
 load()
-
-     
+song_fra=LabelFrame(root,width=140,height=1101,border=0)
+song_fra.pack(fill=X)
+for i in range(len(music_list)):
+    ee=Label(song_fra,image=musfiimg,compound=LEFT,text=str(music_list[i]).strip(".mp3"),highlightbackground="black",highlightthickness=1,font="arial 9",height=0,state=ACTIVE,anchor=W,activebackground="green",background=back_control_colour)
+    ee.pack(fill=X)
 
 #resizing and respacing window/button on minimizing or maxismizing window
 def window_event(e=None):
@@ -150,32 +160,41 @@ def window_event(e=None):
     global prog
     scr=root.winfo_width()
     hig=root.winfo_height()
-    # print(scr,hig)
+    print(scr,hig)
     if scr==1366 and hig==705:
         prog.config(length=1366)
         previous_button.pack(side=LEFT,padx=(600,0))
         play_button.pack(side=LEFT,padx=(30,26))
         next_button.pack(side=LEFT)
-    if (scr==700 and hig==500) or (scr==853 and hig==500) or (scr==1370 and hig==500) or (scr==782 and hig==500) :
+    else: 
         prog.config(length=660)
+        prog.update()
         previous_button.pack(side=LEFT,padx=(275,0))
         play_button.pack(side=LEFT,padx=(30,26))
         next_button.pack(side=LEFT)
-    if count==1:
-        root.minsize(width=800,height=500)
+        root.minsize(width=760,height=500)
+    
 
 
 root.bind("<Map>", window_event)
 
 
-option_butt=Button(opbuttf,border=0,bg=opbutt_color,image=addimg,compound=tk.LEFT,width=70,text="     Add  ",foreground="white")
-option_butt.pack(pady=(45,11),padx=(0,12))
-option_butt=Button(opbuttf,border=0,bg=opbutt_color,image=albimg,compound=tk.LEFT,width=70,foreground="white",text="   Album")
-option_butt.pack(pady=15,padx=(0,12))
-option_butt=Button(opbuttf,border=0,bg=opbutt_color,height=30,image=playlimg,compound=tk.LEFT,width=70,text="   Playlist",foreground="white")
-option_butt.pack(pady=15,padx=(0,12))
-option_butt=Button(opbuttf,border=0,bg=opbutt_color,height=30,image=podimg,compound=tk.LEFT,width=70,text="   Podcast",foreground="white")
-option_butt.pack(pady=15,padx=(0,12))
+option_butt=Button(opbuttf,border=0,bg=opbutt_color,image=addimg,compound=tk.LEFT,foreground="white")
+option_butt.pack(padx=6,pady=(45,11))
+option_butt=Button(opbuttf,border=0,bg=opbutt_color,image=albimg,compound=tk.LEFT,foreground="white")
+option_butt.pack(pady=15,padx=6)
+option_butt=Button(opbuttf,border=0,bg=opbutt_color,height=30,image=playlimg,compound=tk.LEFT,foreground="white")
+option_butt.pack(pady=15,padx=6)
+option_butt=Button(opbuttf,border=0,bg=opbutt_color,height=30,image=podimg,compound=tk.LEFT,foreground="white")
+option_butt.pack(pady=15,padx=6)
+# option_butt=Button(opbuttf,border=0,bg=opbutt_color,image=addimg,compound=tk.LEFT,width=70,text="     Add  ",foreground="white")
+# option_butt.pack(padx=(0,12),pady=(45,11))
+# option_butt=Button(opbuttf,border=0,bg=opbutt_color,image=albimg,compound=tk.LEFT,width=70,foreground="white",text="   Album")
+# option_butt.pack(pady=15,padx=(0,12))
+# option_butt=Button(opbuttf,border=0,bg=opbutt_color,height=30,image=playlimg,compound=tk.LEFT,width=70,text="   Playlist",foreground="white")
+# option_butt.pack(pady=15,padx=(0,12))
+# option_butt=Button(opbuttf,border=0,bg=opbutt_color,height=30,image=podimg,compound=tk.LEFT,width=70,text="   Podcast",foreground="white")
+# option_butt.pack(pady=15,padx=(0,12))
 root.mainloop()
 
 # #function of side menu
