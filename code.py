@@ -27,7 +27,7 @@ opbuttf.pack(side=LEFT,fill=Y)
 plimg=PhotoImage(file="icon\play.png")
 playlimg=PhotoImage(file="icon\playlist.png")
 addimg=PhotoImage(file=r"icon\add.png")
-musfiimg=PhotoImage(file="icon\cassette.png")
+musfiimg=PhotoImage(file=r"icon\music.png")
 podimg=PhotoImage(file="icon\podcast.png")
 albimg=PhotoImage(file=r"icon\album.png")
 previmg=PhotoImage(file="icon\previous.png")
@@ -39,7 +39,6 @@ control=Frame(root,background=back_control_colour)
 control.pack(side=BOTTOM,fill=X)
 
 Label(text="SONGS",font="gabriola 20 bold",foreground="black",background=back_control_colour).pack(anchor=NW)
-# Label(root,height=0,width=500,font="gabriola 1",foreground="black").pack(side=TOP)
 #intial width of progress bar
 global wid
 wid=0
